@@ -9,7 +9,9 @@ Meta app: **Beauty-Grid Autopost**, business portfolio **Beauty Grid**.
 Settings → Environments → **autopost** → Add environment secret:
 
 - `IG_TOKEN` — token from the app (Use cases → Instagram API → API setup with Unified login → Generate token). Must include `pages_manage_posts` for Facebook.
-- `IG_USER_ID` — Instagram account id of @beauty.griderp (optional; looked up when missing).
+- `FB_PAGE_TOKEN` — Beauty-Grid Page token (Graph API Explorer → app Beauty-Grid Autopost → `pages_manage_posts`, `pages_show_list` → extend → `me/accounts`). Until it is set, Facebook rows are skipped and only Instagram posts.
+
+@beauty.griderp Instagram id 17841480792574426 is set in the workflow.
 
 The Facebook Page id is set in the workflow (`PAGE_ID`, Beauty-Grid = 1516231928232345).
 

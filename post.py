@@ -46,7 +46,7 @@ def call(method, path, token=None, **params):
 def publish_facebook(row):
     # Needs PAGE_ID; the Page token is fetched with IG_TOKEN (which must have pages_manage_posts).
     page = os.environ.get("PAGE_ID") or call("GET", "me", fields="id")["id"]
-    pt = call("GET", page, fields="access_token").get("access_token") or TOKEN
+    pt = os.environ.get("FB_PAGE_TOKEN", "").strip() or call("GET", page, fields="access_token").get("access_token") or TOKEN
     if row["type"].upper() == "REEL":
         return call("POST", f"{page}/videos", pt, file_url=row["media_url"], description=row["caption"])["id"]
     return call("POST", f"{page}/photos", pt, url=row["media_url"], message=row["caption"])["id"]
@@ -98,6 +98,8 @@ def main():
         done = [s for s in (row["status"] or "").split()
                 if s.split(":")[0] in publishers and not s.endswith(":ERROR")]
         todo = [p for p in wanted if not any(s.startswith(p + ":") for s in done)]
+        if not os.environ.get("FB_PAGE_TOKEN", "").strip():
+            todo = [p for p in todo if p != "facebook"]  # Facebook waits until FB_PAGE_TOKEN is set
         if not todo:
             continue
         if not TOKEN:

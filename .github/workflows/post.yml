@@ -26,7 +26,8 @@ jobs:
           python-version: "3.12"
       - name: Publish due posts
         env:
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID || '17841480792574426' }}  # @beauty.griderp
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           PAGE_ID: ${{ vars.PAGE_ID || '1516231928232345' }}  # Beauty-Grid Facebook Page
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           CHECK_ONLY: ${{ inputs.check_only }}
