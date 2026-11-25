@@ -1,0 +1,40 @@
+name: Beauty-Grid autopost
+
+on:
+  schedule:
+    - cron: "7 * * * *"  # hourly
+  workflow_dispatch:
+    inputs:
+      check_only:
+        description: "Only check the token, publish nothing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency: autopost
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    environment: autopost
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Publish due posts
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          PAGE_ID: ${{ vars.PAGE_ID || '1516231928232345' }}  # Beauty-Grid Facebook Page
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          CHECK_ONLY: ${{ inputs.check_only }}
+        run: python post.py
+      - name: Save status
+        if: always()
+        run: |
+          git config user.name "autopost-bot"
+          git config user.email "autopost-bot@users.noreply.github.com"
+          git add posts.csv
+          git diff --cached --quiet || (git commit -m "Update post status" && git push)
